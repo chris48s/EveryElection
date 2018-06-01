@@ -71,7 +71,9 @@ def select_organisation(wizard):
         return True
     else:
         wizard.storage.extra_data.update({
-            'election_organisation': [qs[0].organisation.slug, ]})
+            'election_organisation': [
+                qs[0].organisation.get_slug(wizard.get_election_date()),
+            ]})
 
         return False
 

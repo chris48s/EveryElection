@@ -4,7 +4,7 @@ from .models import Organisation
 
 class SupportedOrganisationsView(ListView):
     template_name = "organisations/supported_organisations.html"
-    queryset = Organisation.objects.all().order_by('organisation_type', 'common_name')
+    queryset = Organisation.objects.all().order_by('organisation_type', 'official_identifier')
 
 class OrganisationsView(DetailView):
     queryset = Organisation.objects.all()

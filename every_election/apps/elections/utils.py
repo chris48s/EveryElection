@@ -75,7 +75,7 @@ class ElectionBuilder:
                 organisation_type=self.election_type.election_type)
         else:
             self._use_org = True
-            self.id = self.id.with_organisation(organisation.slug)
+            self.id = self.id.with_organisation(organisation.get_slug(self.date))
             self.organisation = organisation
         return self
 
@@ -153,7 +153,7 @@ class ElectionBuilder:
 
         parts = []
         if self._use_org and self.organisation:
-            parts.append(self.organisation.election_name)
+            parts.append(self.organisation.get_election_name(self.date))
         if self.division:
             parts.append("{}".format(self.division.name))
         if self.subtype:

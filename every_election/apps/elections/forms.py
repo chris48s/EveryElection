@@ -102,7 +102,7 @@ class ElectionOrganisationDivisionForm(forms.Form):
             return
         for organisation in organisations.all():
             self.fields[organisation.pk] = dc_forms.DCHeaderField(
-                label=organisation.common_name)
+                label=organisation.get_common_name(election_date))
 
 
             div_set = OrganisationDivisionSet.objects.filter(

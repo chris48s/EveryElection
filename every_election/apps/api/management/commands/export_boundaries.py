@@ -103,7 +103,7 @@ class Command(BaseCommand):
                                    properties={
                                         'name': election.election_title,
                                         'division': election.division.name if election.division else None,
-                                        'organisation': election.organisation.official_name
+                                        'organisation': election.organisation.get_official_name(election.poll_open_date)
                                    })
             features.append(feat)
         return geojson.FeatureCollection(features,

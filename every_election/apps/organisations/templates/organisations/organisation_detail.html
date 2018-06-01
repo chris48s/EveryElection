@@ -7,8 +7,8 @@
     <div class="card postcode_card">
 
         <h1>{{ object.name }}</h1>
-        <p>Also known as "{{ object.common_name }}".</p>
-        <p>For election IDs, this should be referred to as <code>{{ object.slug }}</code></p>
+        <p>Also known as "{{ object.names.latest.common_name }}".</p>
+        <p>For election IDs, this should be referred to as <code>{{ object.names.latest.slug }}</code></p>
         <p>The official identifier is <code>{{ object.official_identifier }}</code></p>
         <p>The organisation type is <code>{{ object.organisation_type }}</code></p>
         {% if object.election_types.all %}
