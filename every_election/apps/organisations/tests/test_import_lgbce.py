@@ -5,8 +5,13 @@ from io import StringIO
 from django.contrib.gis.gdal import DataSource
 from django.utils.text import slugify
 from django.test import TestCase
-from organisations.models import (DivisionGeography,
-    Organisation, OrganisationDivision, OrganisationDivisionSet)
+from organisations.models import (
+    DivisionGeography,
+    Organisation,
+    OrganisationDivision,
+    OrganisationDivisionSet,
+    OrganisationName
+)
 from organisations.management.commands.import_lgbce import Command
 
 
@@ -24,12 +29,16 @@ class ImportLgbceTests(TestCase):
         self.org1 = Organisation.objects.create(
             official_identifier='TEST1',
             organisation_type='local-authority',
-            official_name="Test Council 1",
             gss="X00000001",
-            slug="test1",
             territory_code="ENG",
-            election_name="Test Council 1 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org1,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 1",
+            election_name="Test Council 1 Local Elections",
+            slug="test1",
         )
 
         # valid org/div
@@ -37,12 +46,16 @@ class ImportLgbceTests(TestCase):
         valid_org = Organisation.objects.create(
             official_identifier=self.valid_org_code,
             organisation_type='local-authority',
-            official_name="Test Council 2",
             gss="X00000006",
-            slug="test2",
             territory_code="ENG",
-            election_name="Test Council 2 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=valid_org,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 2",
+            election_name="Test Council 2 Local Elections",
+            slug="test2",
         )
         self.valid_divset = OrganisationDivisionSet.objects.create(
             organisation=valid_org,

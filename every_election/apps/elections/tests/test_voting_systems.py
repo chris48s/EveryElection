@@ -4,7 +4,7 @@ from elections.utils import ElectionBuilder
 
 from .base_tests import BaseElectionCreatorMixIn
 from elections.models import ElectedRole
-from organisations.tests.factories import OrganisationFactory
+from organisations.tests.factories import OrganisationFactory, OrganisationNameFactory
 
 
 class TestElectoralSystems(BaseElectionCreatorMixIn, TestCase):
@@ -22,6 +22,9 @@ class TestElectoralSystems(BaseElectionCreatorMixIn, TestCase):
         scot_org = OrganisationFactory(
             territory_code="SCT",
             gss="S0000001"
+        )
+        OrganisationNameFactory(
+            organisation=scot_org
         )
 
         ElectedRole.objects.create(

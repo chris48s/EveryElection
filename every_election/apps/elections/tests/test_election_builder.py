@@ -3,7 +3,7 @@ from django.test import TestCase
 from elections.models import ElectionType, ElectionSubType, ElectedRole
 from elections.utils import ElectionBuilder
 from election_snooper.models import SnoopedElection
-from organisations.models import Organisation, OrganisationDivision
+from organisations.models import Organisation, OrganisationDivision, OrganisationName
 from .base_tests import BaseElectionCreatorMixIn
 
 
@@ -70,12 +70,16 @@ class TestElectionBuilder(BaseElectionCreatorMixIn, TestCase):
         org2 = Organisation.objects.create(
             official_identifier='TEST2',
             organisation_type='local-authority',
-            official_name="Test Council",
             gss="X00000003",
-            slug="test2",
             territory_code="ENG",
-            election_name="Test2 Council Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=org2,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council",
+            election_name="Test2 Council Local Elections",
+            slug="test2",
         )
         ElectedRole.objects.create(
             election_type=self.election_type1,

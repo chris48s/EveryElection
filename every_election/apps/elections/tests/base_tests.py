@@ -1,6 +1,6 @@
 from datetime import date
 
-from organisations.models import Organisation
+from organisations.models import Organisation, OrganisationName
 from organisations.tests.factories import OrganisationDivisionFactory
 from elections.models import ElectionType, ElectedRole
 from elections.utils import create_ids_for_each_ballot_paper
@@ -29,12 +29,16 @@ class BaseElectionCreatorMixIn():
         self.org1 = Organisation.objects.create(
             official_identifier='TEST1',
             organisation_type='local-authority',
-            official_name="Test Council",
             gss="X00000001",
-            slug="test",
             territory_code="ENG",
-            election_name="Test Council local elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org1,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council",
+            election_name="Test Council local elections",
+            slug="test",
         )
 
         self.elected_role1 = ElectedRole.objects.create(

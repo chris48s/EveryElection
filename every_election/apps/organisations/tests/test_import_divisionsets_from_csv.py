@@ -1,7 +1,7 @@
 from datetime import date
 from django.test import TestCase
 from organisations.models import (
-    Organisation, OrganisationDivisionSet)
+    Organisation, OrganisationName, OrganisationDivisionSet)
 from organisations.management.commands.import_divisionsets_from_csv import Command
 
 
@@ -19,12 +19,16 @@ class ImportDivisionSetsFromCsvTests(TestCase):
         self.org1 = Organisation.objects.create(
             official_identifier='TEST1',
             organisation_type='local-authority',
-            official_name="Test Council 1",
             gss="X00000001",
-            slug="test1",
             territory_code="ENG",
-            election_name="Test Council 1 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org1,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 1",
+            election_name="Test Council 1 Local Elections",
+            slug="test1",
         )
         self.base_record = {
             'Start Date': '',
@@ -45,22 +49,30 @@ class ImportDivisionSetsFromCsvTests(TestCase):
         self.org3 = Organisation.objects.create(
             official_identifier='TEST3',
             organisation_type='local-authority',
-            official_name="Test Council 3",
             gss="X00000003",
-            slug="test3",
             territory_code="ENG",
-            election_name="Test Council 3 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org3,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 3",
+            election_name="Test Council 3 Local Elections",
+            slug="test3",
         )
         self.org4 = Organisation.objects.create(
             official_identifier='TEST4',
             organisation_type='local-authority',
-            official_name="Test Council 4",
             gss="X00000004",
-            slug="test4",
             territory_code="ENG",
-            election_name="Test Council 4 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org4,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 4",
+            election_name="Test Council 4 Local Elections",
+            slug="test4",
         )
         OrganisationDivisionSet.objects.create(
             organisation=self.org3,

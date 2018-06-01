@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from elections.models import (
     ElectedRole, Election, ElectionType, ElectionSubType)
-from organisations.models import Organisation, DivisionGeography
+from organisations.models import Organisation, OrganisationName, DivisionGeography
 from organisations.tests.factories import OrganisationDivisionFactory
 
 from .base_tests import BaseElectionCreatorMixIn
@@ -86,12 +86,16 @@ class TestCreateIds(BaseElectionCreatorMixIn, TestCase):
         org2 = Organisation.objects.create(
             official_identifier='TEST2',
             organisation_type='local-authority',
-            official_name="Test Council 2",
             gss="X00000002",
-            slug="test2",
             territory_code="ENG",
-            election_name="Test Council 2 local elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=org2,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 2",
+            election_name="Test Council 2 local elections",
+            slug="test2",
         )
         ElectedRole.objects.create(
             election_type=self.election_type1,
@@ -189,12 +193,16 @@ class TestCreateIds(BaseElectionCreatorMixIn, TestCase):
         mayor_org = Organisation.objects.create(
             official_identifier='MAYORTEST1',
             organisation_type='combined-authority',
-            official_name="Test authority",
             gss="X10000001",
-            slug="test-ca",
             territory_code="ENG",
-            election_name="Test Council Mayoral elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=mayor_org,
+            start_date=date(2016, 10, 1),
+            official_name="Test authority",
+            election_name="Test Council Mayoral elections",
+            slug="test-ca",
         )
         mayor_election_type = ElectionType.objects.get(
             election_type='mayor',
@@ -232,12 +240,16 @@ class TestCreateIds(BaseElectionCreatorMixIn, TestCase):
         parl_org = Organisation.objects.create(
             official_identifier='parl',
             organisation_type='parl',
-            official_name="Parl",
             gss="X20000001",
-            slug="parl",
             territory_code="ENG",
-            election_name="General Election",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=parl_org,
+            start_date=date(2016, 10, 1),
+            official_name="Parl",
+            election_name="General Election",
+            slug="parl",
         )
         parl_election_type = ElectionType.objects.get(
             election_type='parl',
@@ -273,12 +285,16 @@ class TestCreateIds(BaseElectionCreatorMixIn, TestCase):
         naw_org = Organisation.objects.create(
             official_identifier='naw',
             organisation_type='naw',
-            official_name="naw",
             gss="W20000001",
-            slug="naw",
             territory_code="WLS",
-            election_name="National Assembly for Wales elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=naw_org,
+            start_date=date(2016, 10, 1),
+            official_name="naw",
+            election_name="National Assembly for Wales elections",
+            slug="naw",
         )
         naw_election_type = ElectionType.objects.get(
             election_type='naw',

@@ -1,7 +1,7 @@
 from datetime import date
 import factory
 
-from organisations.models import (Organisation, OrganisationDivisionSet,
+from organisations.models import (Organisation, OrganisationName, OrganisationDivisionSet,
                                   OrganisationDivision, DivisionGeography)
 
 
@@ -11,14 +11,22 @@ class OrganisationFactory(factory.django.DjangoModelFactory):
 
     official_identifier = factory.Sequence(lambda n: n)
     organisation_type = "local-authority"
-    official_name = factory.Sequence(
-        lambda n: 'The Organisation %d Council' % n)
-    common_name = factory.Sequence(lambda n: 'Organisation %d' % n)
     gss = factory.Sequence(lambda n: 'E00000%d' % n)
-    slug = factory.Sequence(lambda n: 'org-%d' % n)
     territory_code = "ENG"
     # election_types
     # election_name
+    start_date = date(2016, 10, 1)
+
+
+class OrganisationNameFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = OrganisationName
+
+    organisation = factory.SubFactory(OrganisationFactory)
+    official_name = factory.Sequence(
+        lambda n: 'The Organisation %d Council' % n)
+    common_name = factory.Sequence(lambda n: 'Organisation %d' % n)
+    slug = factory.Sequence(lambda n: 'org-%d' % n)
     start_date = date(2016, 10, 1)
 
 

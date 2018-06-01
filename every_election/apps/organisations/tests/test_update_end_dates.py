@@ -2,7 +2,7 @@ from datetime import date
 from io import StringIO
 import os
 from django.test import TestCase
-from organisations.models import Organisation, OrganisationDivisionSet
+from organisations.models import Organisation, OrganisationDivisionSet, OrganisationName
 from organisations.management.commands.update_end_dates import Command
 
 
@@ -13,32 +13,44 @@ class UpdateEndDatesTests(TestCase):
         self.org1 = Organisation.objects.create(
             official_identifier='TEST1',
             organisation_type='local-authority',
-            official_name="Test Council 1",
             gss="X00000001",
-            slug="test1",
             territory_code="ENG",
-            election_name="Test Council 1 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org1,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 1",
+            election_name="Test Council 1 Local Elections",
+            slug="test1",
         )
         self.org2 = Organisation.objects.create(
             official_identifier='TEST2',
             organisation_type='local-authority',
-            official_name="Test Council 2",
             gss="X00000002",
-            slug="test2",
             territory_code="ENG",
-            election_name="Test Council 2 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org2,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 2",
+            election_name="Test Council 2 Local Elections",
+            slug="test2",
         )
         self.org3 = Organisation.objects.create(
             official_identifier='TEST3',
             organisation_type='local-authority',
-            official_name="Test Council 3",
             gss="X00000003",
-            slug="test3",
             territory_code="ENG",
-            election_name="Test Council 3 Local Elections",
             start_date=date(2016, 10, 1),
+        )
+        OrganisationName.objects.create(
+            organisation=self.org3,
+            start_date=date(2016, 10, 1),
+            official_name="Test Council 3",
+            election_name="Test Council 3 Local Elections",
+            slug="test3",
         )
         OrganisationDivisionSet.objects.create(
             organisation=self.org1,

@@ -2,7 +2,8 @@ import pytest
 
 from organisations.tests.factories import (
     OrganisationDivisionSetFactory,
-    OrganisationDivisionFactory
+    OrganisationDivisionFactory,
+    OrganisationNameFactory
 )
 from elections.utils import ElectionBuilder
 from elections.tests.factories import ElectedRoleFactory
@@ -22,6 +23,7 @@ def test_division_set_by_date(db):
         org_div = OrganisationDivisionFactory(divisionset=ds)
 
     org = org_div.organisation
+    OrganisationNameFactory(organisation=org)
     ElectedRoleFactory(organisation=org)
 
     def _make_ids_for_date(date):
