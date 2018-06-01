@@ -41,6 +41,15 @@ class Organisation(models.Model):
         )
 
 
+class OrganisationName(models.Model):
+    organisation = models.ForeignKey(Organisation, related_name='name')
+    official_name = models.CharField(blank=True, max_length=255)
+    common_name = models.CharField(blank=True, max_length=255)
+    slug = models.CharField(blank=True, max_length=100)
+    election_name = models.CharField(blank=True, max_length=255)
+    start_date = models.DateField(null=False)
+    end_date = models.DateField(null=True)
+
 
 class OrganisationDivisionSet(models.Model):
     organisation = models.ForeignKey(Organisation, related_name='divisionset')
