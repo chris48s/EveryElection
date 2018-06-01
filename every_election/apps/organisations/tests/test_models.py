@@ -62,7 +62,7 @@ class OrganisationNameTests(TestCase):
         name2 = self.org2._get_name(date(2017, 12, 1))
         self.assertEqual('bar', name2.slug)
         name3 = self.org2._get_name(datetime.today())
-        self.assertEqual('bar', name2.slug)
+        self.assertEqual('bar', name3.slug)
 
     def test_two_related_names_no_results_found(self):
         with self.assertRaises(OrganisationName.DoesNotExist):
