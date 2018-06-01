@@ -10,14 +10,10 @@ class Organisation(models.Model):
         blank=True, max_length=255, db_index=True)
     organisation_type = models.CharField(blank=True, max_length=255)
     organisation_subtype = models.CharField(blank=True, max_length=255)
-    official_name = models.CharField(blank=True, max_length=255)
-    common_name = models.CharField(blank=True, max_length=255)
     gss = models.CharField(blank=True, max_length=20)
-    slug = models.CharField(blank=True, max_length=100)
     territory_code = models.CharField(blank=True, max_length=10)
     election_types = models.ManyToManyField(
         'elections.ElectionType', through='elections.ElectedRole')
-    election_name = models.CharField(blank=True, max_length=255)
     start_date = models.DateField(null=False)
     end_date = models.DateField(null=True)
     ValidationError = ValueError
@@ -27,10 +23,12 @@ class Organisation(models.Model):
 
     @property
     def name(self):
-        return self.official_name or self.common_name or self.official_identifier
+        return self.names.latest().official_name or\
+            self.names.latest().common_name or\
+            self.official_identifier
 
     class Meta:
-        ordering = ('official_name',)
+        ordering = ('official_identifier',)
 
     def get_absolute_url(self):
         return reverse("organisation_view", args=(self.official_identifier,))
@@ -42,13 +40,16 @@ class Organisation(models.Model):
 
 
 class OrganisationName(models.Model):
-    organisation = models.ForeignKey(Organisation, related_name='name')
+    organisation = models.ForeignKey(Organisation, related_name='names')
     official_name = models.CharField(blank=True, max_length=255)
     common_name = models.CharField(blank=True, max_length=255)
     slug = models.CharField(blank=True, max_length=100)
     election_name = models.CharField(blank=True, max_length=255)
     start_date = models.DateField(null=False)
     end_date = models.DateField(null=True)
+
+    class Meta:
+        get_latest_by = 'start_date'
 
 
 class OrganisationDivisionSet(models.Model):
