@@ -27,6 +27,36 @@ class Organisation(models.Model):
             self.names.latest().common_name or\
             self.official_identifier
 
+    def _get_name(self, date=None):
+
+        if len(self.names.all()) <= 1:
+            return self.names.latest()
+
+        if not date:
+            raise ValueError('Must query with date if Organisation has >1 related names')
+
+        qs = self.names.all()\
+            .filter(start_date__lte=date)\
+            .filter(models.Q(end_date__gte=date) | models.Q(end_date=None))
+
+        return qs.latest()
+
+    def get_slug(self, date=None):
+        name = self._get_name(date)
+        return name.slug
+
+    def get_official_name(self, date=None):
+        name = self._get_name(date)
+        return name.official_name
+
+    def get_common_name(self, date=None):
+        name = self._get_name(date)
+        return name.common_name
+
+    def get_election_name(self, date=None):
+        name = self._get_name(date)
+        return name.election_name
+
     class Meta:
         ordering = ('official_identifier',)
 
