@@ -144,6 +144,34 @@ class TestElectionAPIQueries(APITestCase):
         data = resp.json()
         assert data['count'] == 1
 
+    def test_deleted_filter_list(self):
+        approved = ElectionFactory(group=None, suggested_status='approved')
+        deleted = ElectionFactory(group=None, suggested_status='deleted')
+        ElectionFactory(group=None, suggested_status='rejected')
+        ElectionFactory(group=None, suggested_status='suggested')
+
+        resp = self.client.get("/api/elections/")
+        data = resp.json()
+        self.assertEqual(1, data['count'])
+        self.assertEqual(
+            data['results'][0]['election_id'], approved.election_id)
+
+        resp = self.client.get("/api/elections/?deleted=1")
+        data = resp.json()
+        self.assertEqual(1, data['count'])
+        self.assertEqual(
+            data['results'][0]['election_id'], deleted.election_id)
+
+    def test_deleted_filter_detail(self):
+        election = ElectionFactory(group=None, suggested_status='deleted')
+        id_ = election.election_id
+
+        resp = self.client.get("/api/elections/{}/".format(id_))
+        self.assertEqual(404, resp.status_code)
+
+        resp = self.client.get("/api/elections/{}/?deleted=1".format(id_))
+        self.assertEqual(200, resp.status_code)
+
     def test_all_expected_fields_returned(self):
 
         org = OrganisationFactory()
