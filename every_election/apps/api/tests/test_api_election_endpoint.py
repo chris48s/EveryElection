@@ -155,12 +155,14 @@ class TestElectionAPIQueries(APITestCase):
         self.assertEqual(1, data['count'])
         self.assertEqual(
             data['results'][0]['election_id'], approved.election_id)
+        self.assertEqual(data['results'][0]['deleted'], False)
 
         resp = self.client.get("/api/elections/?deleted=1")
         data = resp.json()
         self.assertEqual(1, data['count'])
         self.assertEqual(
             data['results'][0]['election_id'], deleted.election_id)
+        self.assertEqual(data['results'][0]['deleted'], True)
 
     def test_deleted_filter_detail(self):
         election = ElectionFactory(group=None, suggested_status='deleted')
@@ -237,7 +239,8 @@ class TestElectionAPIQueries(APITestCase):
             "elected_role": "Councillor",
             "seats_contested": 1,
             "tmp_election_id": null,
-            "metadata": null
+            "metadata": null,
+            "deleted": false
         }
         """)
 
