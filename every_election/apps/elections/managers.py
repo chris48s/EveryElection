@@ -38,28 +38,7 @@ class ElectionQuerySet(models.QuerySet):
         return self.filter(poll_open_date__gte=datetime.today())
 
 
-class BaseElectionManager(models.Manager):
-
-    def get_queryset(self):
-        return ElectionQuerySet(self.model, using=self._db)
-
-    def for_point(self, point):
-        return self.get_queryset().for_point(point)
-
-    def for_lat_lng(self, lat, lng):
-        return self.get_queryset().for_lat_lng(lat, lng)
-
-    def for_postcode(self, postcode):
-        return self.get_queryset().for_postcode(postcode)
-
-    def current(self):
-        return self.get_queryset().current()
-
-    def future(self):
-        return self.get_queryset().future()
-
-
-class PublicElectionsManager(BaseElectionManager):
+class PublicElectionsManager(models.Manager):
 
     """
     In most cases, we want to expose elections which are approved
@@ -71,7 +50,7 @@ class PublicElectionsManager(BaseElectionManager):
         return super().get_queryset().filter(suggested_status='approved')
 
 
-class PrivateElectionsManager(BaseElectionManager):
+class PrivateElectionsManager(models.Manager):
     """
     In a some contexts
     (some API outputs, moderation queue code, /admin, unit tests, etc)

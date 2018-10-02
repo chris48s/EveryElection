@@ -13,7 +13,7 @@ from django_markdown.models import MarkdownField
 
 from storages.backends.s3boto3 import S3Boto3Storage
 from suggested_content.models import SuggestedByPublicMixin
-from .managers import PublicElectionsManager, PrivateElectionsManager
+from .managers import PublicElectionsManager, PrivateElectionsManager, ElectionQuerySet
 
 
 class ElectionType(models.Model):
@@ -97,8 +97,8 @@ class Election(SuggestedByPublicMixin, models.Model):
         null=True, blank=True, on_delete=models.SET_NULL)
 
 
-    public_objects = PublicElectionsManager()
-    private_objects = PrivateElectionsManager()
+    public_objects = PublicElectionsManager.from_queryset(ElectionQuerySet)()
+    private_objects = PrivateElectionsManager.from_queryset(ElectionQuerySet)()
 
     class Meta:
         ordering = ('election_id',)
