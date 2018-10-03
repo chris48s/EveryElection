@@ -9,11 +9,12 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.postgres.fields import JSONField
+from django_extensions.db.models import TimeStampedModel
 from django_markdown.models import MarkdownField
 
 from storages.backends.s3boto3 import S3Boto3Storage
 from suggested_content.models import SuggestedByPublicMixin
-from .managers import PublicElectionsManager, PrivateElectionsManager, ElectionQuerySet
+from .managers import PublicElectionsManager, PrivateElectionsManager
 
 
 class ElectionType(models.Model):
@@ -53,6 +54,14 @@ class ElectedRole(models.Model):
         return "{} ({})".format(self.elected_title, self.organisation)
 
 
+class ModerationStatus(models.Model):
+    short_title = models.CharField(blank=False, max_length=32)
+    long_title = models.CharField(blank=False, max_length=100)
+
+    def __str__(self):
+        return self.short_title
+
+
 class Election(SuggestedByPublicMixin, models.Model):
     """
     An election.
@@ -83,6 +92,8 @@ class Election(SuggestedByPublicMixin, models.Model):
     metadata = models.ForeignKey('elections.MetaData',
         null=True, blank=True, on_delete=models.SET_NULL)
     current = models.NullBooleanField()
+    moderation_statuses = models.ManyToManyField(
+        ModerationStatus, through='ElectionModerationStatus')
 
     # where did we hear about this election
     # (not necessarily the Notice of Election)
@@ -97,8 +108,8 @@ class Election(SuggestedByPublicMixin, models.Model):
         null=True, blank=True, on_delete=models.SET_NULL)
 
 
-    public_objects = PublicElectionsManager.from_queryset(ElectionQuerySet)()
-    private_objects = PrivateElectionsManager.from_queryset(ElectionQuerySet)()
+    public_objects = PublicElectionsManager()
+    private_objects = PrivateElectionsManager()
 
     class Meta:
         ordering = ('election_id',)
@@ -202,6 +213,12 @@ class Election(SuggestedByPublicMixin, models.Model):
             self.group = group_model
 
         return super().save(*args, **kwargs)
+
+
+class ElectionModerationStatus(TimeStampedModel):
+    election = models.ForeignKey(Election, on_delete=models.CASCADE)
+    status = models.ForeignKey(ModerationStatus, on_delete=models.CASCADE)
+    # TODO: add more fields when we add moderation data entry features
 
 
 class VotingSystem(models.Model):
