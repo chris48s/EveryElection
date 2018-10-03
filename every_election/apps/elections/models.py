@@ -55,7 +55,7 @@ class ElectedRole(models.Model):
 
 
 class ModerationStatus(models.Model):
-    short_title = models.CharField(blank=False, max_length=32)
+    short_title = models.CharField(blank=False, max_length=32, unique=True)
     long_title = models.CharField(blank=False, max_length=100)
 
     def __str__(self):
