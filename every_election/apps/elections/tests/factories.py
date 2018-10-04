@@ -1,9 +1,18 @@
+import datetime
 import factory
 
-from elections.models import Election, ElectionType, ElectedRole
-from organisations.tests.factories import (OrganisationFactory,
-                                           OrganisationDivisionFactory,
-                                           DivisionGeographyFactory)
+from elections.models import (
+    Election,
+    ElectionModerationStatus,
+    ElectionType,
+    ElectedRole,
+    ModerationStatus
+)
+from organisations.tests.factories import (
+    OrganisationFactory,
+    OrganisationDivisionFactory,
+    DivisionGeographyFactory
+)
 
 
 class ElectionTypeFactory(factory.django.DjangoModelFactory):
@@ -32,6 +41,10 @@ class ElectionFactory(factory.django.DjangoModelFactory):
         model = Election
         django_get_or_create = ('election_id', )
 
+    @classmethod
+    def _get_manager(cls, model_class):
+        return model_class.private_objects
+
     election_id = factory.Sequence(
         lambda n: 'local.place-name-%d.2017-03-23' % n)
     election_title = factory.Sequence(lambda n: 'Election %d' % n)
@@ -49,4 +62,34 @@ class ElectionFactory(factory.django.DjangoModelFactory):
         election_id="local.2017-03-23",
         group=None, group_type="election")
     group_type = None
-    suggested_status = 'approved'
+
+
+class ModerationStatusFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ModerationStatus
+        django_get_or_create = ('short_title', )
+    short_title = 'Approved'
+    long_title = 'long title'
+
+
+class ElectionModerationStatusFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ElectionModerationStatus
+
+    election = factory.SubFactory(ElectionFactory)
+    status = factory.SubFactory(ModerationStatusFactory)
+    created = datetime.datetime.now()
+    modified = datetime.datetime.now()
+
+
+def create_election_with_status(*args, **kwargs):
+    try:
+        status = kwargs.pop('moderation_status')
+    except KeyError:
+        status = 'Approved'
+    election = ElectionFactory(*args, **kwargs)
+    ElectionModerationStatusFactory(
+        election=election,
+        status=ModerationStatusFactory(short_title=status)
+    )
+    return election
