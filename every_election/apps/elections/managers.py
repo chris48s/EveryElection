@@ -64,7 +64,7 @@ class PrivateElectionsManager(models.Manager.from_queryset(ElectionQuerySet)):
     use_in_migrations = True
 
     """
-    In a some contexts
+    In some contexts
     (some API outputs, moderation queue code, /admin, unit tests, etc)
     we do also need to reference suggested/rejected/deleted elections.
     In these situations we can explicitly use this manager to
