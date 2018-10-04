@@ -226,7 +226,15 @@ class Election(SuggestedByPublicMixin, models.Model):
                 group_model = self.group.save(*args, **kwargs)
             self.group = group_model
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        if not ElectionModerationStatus.objects.all().filter(election=self).exists():
+            event = ElectionModerationStatus(
+                election=self,
+                # TODO: update this to 'Suggested' once
+                # we have moderation data entry features
+                status=ModerationStatus.objects.get(short_title='Approved')
+            )
+            event.save()
 
 
 class ElectionModerationStatus(TimeStampedModel):
