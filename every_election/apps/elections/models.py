@@ -92,6 +92,17 @@ class Election(SuggestedByPublicMixin, models.Model):
     metadata = models.ForeignKey('elections.MetaData',
         null=True, blank=True, on_delete=models.SET_NULL)
     current = models.NullBooleanField()
+
+    """
+    election.moderation_statuses.all() is not a terribly useful call
+    to reference directly because it just gives us a list of all the
+    statuses an election object has ever been assigned
+    (but not when they were assigned or or which is the most recent).
+
+    Use election.moderation_status to get the current staus of an election
+    or Election.private_objects.all.filter_by_status()
+    to select elections based on their most recent status value.
+    """
     moderation_statuses = models.ManyToManyField(
         ModerationStatus, through='ElectionModerationStatus')
 
@@ -134,6 +145,15 @@ class Election(SuggestedByPublicMixin, models.Model):
             return self.election_id
         else:
             return self.tmp_election_id
+
+    @property
+    def moderation_status(self):
+        return ElectionModerationStatus\
+            .objects\
+            .all()\
+            .filter(election=self)\
+            .latest()\
+            .status
 
     @property
     def geography(self):
