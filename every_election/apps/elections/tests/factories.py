@@ -1,6 +1,8 @@
 import datetime
 import factory
 
+from django.db.models import signals
+
 from elections.models import (
     Election,
     ElectionModerationStatus,
@@ -36,6 +38,7 @@ class ElectedRoleFactory(factory.django.DjangoModelFactory):
     elected_role_name = "Councillor"
 
 
+@factory.django.mute_signals(signals.post_save)
 class ElectionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Election
@@ -82,14 +85,18 @@ class ElectionModerationStatusFactory(factory.django.DjangoModelFactory):
     modified = datetime.datetime.now()
 
 
-def create_election_with_status(*args, **kwargs):
-    try:
-        status = kwargs.pop('moderation_status')
-    except KeyError:
-        status = 'Approved'
-    election = ElectionFactory(*args, **kwargs)
-    ElectionModerationStatusFactory(
-        election=election,
-        status=ModerationStatusFactory(short_title=status)
+class ElectionWithStatusFactory(ElectionFactory):
+    moderation_status = factory.RelatedFactory(
+        ElectionModerationStatusFactory,
+        'election',
+        status__short_title='Approved'
     )
-    return election
+
+
+
+def related_status(status):
+    return factory.RelatedFactory(
+        ElectionModerationStatusFactory,
+        'election',
+        status__short_title=status
+    )

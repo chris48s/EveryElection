@@ -3,7 +3,7 @@ from django.test import TestCase
 from io import StringIO
 import mock
 
-from .factories import create_election_with_status
+from .factories import ElectionWithStatusFactory
 
 from elections.models import Election
 from elections.management.commands import attach_posts_per_election_from_csv
@@ -15,8 +15,7 @@ COMMAND_PATH = \
 class TestAttachPostsPerWard(TestCase):
     def setUp(self):
         # This will make one more election object as a parent
-        for _ in range(0, 5):
-            create_election_with_status(seats_contested=None)
+        ElectionWithStatusFactory.create_batch(5, seats_contested=None)
 
         self.fake_csv_data = []
         for election in Election.public_objects.filter(group_type=None):
@@ -60,7 +59,7 @@ class TestAttachPostsPerWard(TestCase):
 
     @mock.patch(COMMAND_PATH + '.load_data')
     def test_too_many_contested_seats(self, fake_load_csv_data):
-        election = create_election_with_status(seats_total=1)
+        election = ElectionWithStatusFactory(seats_total=1)
         election.division.seats_total = 1
         election.division.save()
         fake_data = [
@@ -84,7 +83,7 @@ class TestAttachPostsPerWard(TestCase):
 
     @mock.patch(COMMAND_PATH + '.load_data')
     def test_skip_unknown(self, fake_load_csv_data):
-        election = create_election_with_status(seats_total=None)
+        election = ElectionWithStatusFactory(seats_total=None)
         fake_data = [
             {
                 'created': 'yes',
