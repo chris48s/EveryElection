@@ -105,7 +105,7 @@ class Election(models.Model):
     to select elections based on their most recent status value.
     """
     moderation_statuses = models.ManyToManyField(
-        ModerationStatus, through='ElectionModerationStatus')
+        ModerationStatus, through='ModerationHistory')
 
     # where did we hear about this election
     # (not necessarily the Notice of Election)
@@ -149,7 +149,7 @@ class Election(models.Model):
 
     @property
     def moderation_status(self):
-        return ElectionModerationStatus\
+        return ModerationHistory\
             .objects\
             .all()\
             .filter(election=self)\
@@ -232,8 +232,8 @@ class Election(models.Model):
 
 @receiver(post_save, sender=Election, dispatch_uid="init_status_history")
 def init_status_history(sender, instance, **kwargs):
-    if not ElectionModerationStatus.objects.all().filter(election=instance).exists():
-        event = ElectionModerationStatus(
+    if not ModerationHistory.objects.all().filter(election=instance).exists():
+        event = ModerationHistory(
             election=instance,
             # TODO: update this to 'Suggested' once
             # we have moderation data entry features
@@ -242,7 +242,7 @@ def init_status_history(sender, instance, **kwargs):
         event.save()
 
 
-class ElectionModerationStatus(TimeStampedModel):
+class ModerationHistory(TimeStampedModel):
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
     status = models.ForeignKey(ModerationStatus, on_delete=models.CASCADE)
     # TODO: add more fields when we add moderation data entry features

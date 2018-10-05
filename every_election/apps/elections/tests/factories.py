@@ -5,7 +5,7 @@ from django.db.models import signals
 
 from elections.models import (
     Election,
-    ElectionModerationStatus,
+    ModerationHistory,
     ElectionType,
     ElectedRole,
     ModerationStatus
@@ -76,9 +76,9 @@ class ModerationStatusFactory(factory.django.DjangoModelFactory):
     long_label = 'long label'
 
 
-class ElectionModerationStatusFactory(factory.django.DjangoModelFactory):
+class ModerationHistoryFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = ElectionModerationStatus
+        model = ModerationHistory
 
     election = factory.SubFactory(ElectionFactory)
     status = factory.SubFactory(ModerationStatusFactory)
@@ -88,7 +88,7 @@ class ElectionModerationStatusFactory(factory.django.DjangoModelFactory):
 
 class ElectionWithStatusFactory(ElectionFactory):
     moderation_status = factory.RelatedFactory(
-        ElectionModerationStatusFactory,
+        ModerationHistoryFactory,
         'election',
         status__short_label='Approved'
     )
@@ -97,7 +97,7 @@ class ElectionWithStatusFactory(ElectionFactory):
 
 def related_status(status):
     return factory.RelatedFactory(
-        ElectionModerationStatusFactory,
+        ModerationHistoryFactory,
         'election',
         status__short_label=status
     )

@@ -40,11 +40,11 @@ class ElectionQuerySet(models.QuerySet):
     def filter_by_status(self, status):
         return self\
             .annotate(
-                latest_status=models.Max('electionmoderationstatus__modified')
+                latest_status=models.Max('moderationhistory__modified')
             )\
             .filter(
-                electionmoderationstatus__modified=models.F('latest_status'),
-                electionmoderationstatus__status__short_label=status
+                moderationhistory__modified=models.F('latest_status'),
+                moderationhistory__status__short_label=status
             )
 
 

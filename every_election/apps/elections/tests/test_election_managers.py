@@ -6,7 +6,7 @@ from django.contrib.gis.geos import Point
 from elections.tests.factories import (
     ElectionFactory,
     ElectionWithStatusFactory,
-    ElectionModerationStatusFactory,
+    ModerationHistoryFactory,
     ModerationStatusFactory,
     related_status,
 )
@@ -85,11 +85,11 @@ class TestElectionGeoQueries(TestCase):
         e2 = ElectionFactory(group=None)
 
         # to start off with they're both 'suggested'
-        ElectionModerationStatusFactory(
+        ModerationHistoryFactory(
             election=e1,
             status=ModerationStatusFactory(short_label='Suggested')
         )
-        ElectionModerationStatusFactory(
+        ModerationHistoryFactory(
             election=e2,
             status=ModerationStatusFactory(short_label='Suggested')
         )
@@ -97,7 +97,7 @@ class TestElectionGeoQueries(TestCase):
         self.assertEqual(2, Election.private_objects.count())
 
         # approve one of them
-        ElectionModerationStatusFactory(
+        ModerationHistoryFactory(
             election=e1,
             status=ModerationStatusFactory(short_label='Approved')
         )
@@ -107,7 +107,7 @@ class TestElectionGeoQueries(TestCase):
         self.assertEqual(2, Election.private_objects.count())
 
         # and then delete it again
-        ElectionModerationStatusFactory(
+        ModerationHistoryFactory(
             election=e1,
             status=ModerationStatusFactory(short_label='Deleted')
         )
