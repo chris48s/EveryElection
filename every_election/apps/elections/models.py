@@ -4,6 +4,8 @@ import urllib.request
 from datetime import date, timedelta
 
 from django.db import models, transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.core.files import File
 from django.urls import reverse
 from django.utils.text import slugify
@@ -226,14 +228,18 @@ class Election(models.Model):
             self.group = group_model
 
         super().save(*args, **kwargs)
-        if not ElectionModerationStatus.objects.all().filter(election=self).exists():
-            event = ElectionModerationStatus(
-                election=self,
-                # TODO: update this to 'Suggested' once
-                # we have moderation data entry features
-                status=ModerationStatus.objects.get(short_title='Approved')
-            )
-            event.save()
+
+
+@receiver(post_save, sender=Election, dispatch_uid="init_status_history")
+def init_status_history(sender, instance, **kwargs):
+    if not ElectionModerationStatus.objects.all().filter(election=instance).exists():
+        event = ElectionModerationStatus(
+            election=instance,
+            # TODO: update this to 'Suggested' once
+            # we have moderation data entry features
+            status=ModerationStatus.objects.get(short_title='Approved')
+        )
+        event.save()
 
 
 class ElectionModerationStatus(TimeStampedModel):
