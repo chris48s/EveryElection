@@ -144,8 +144,8 @@ class TestElectionBuilder(BaseElectionCreatorMixIn, TestCase):
         default_status = 'Approved'
 
         self.assertEqual(
-            default_status, ballot.moderation_status.short_title)
+            default_status, ballot.moderation_status.short_label)
         self.assertEqual(
-            default_status, org_group.moderation_status.short_title)
+            default_status, org_group.moderation_status.short_label)
         self.assertEqual(
-            default_status, election_group.moderation_status.short_title)
+            default_status, election_group.moderation_status.short_label)

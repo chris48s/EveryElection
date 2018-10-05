@@ -87,11 +87,11 @@ class TestElectionGeoQueries(TestCase):
         # to start off with they're both 'suggested'
         ElectionModerationStatusFactory(
             election=e1,
-            status=ModerationStatusFactory(short_title='Suggested')
+            status=ModerationStatusFactory(short_label='Suggested')
         )
         ElectionModerationStatusFactory(
             election=e2,
-            status=ModerationStatusFactory(short_title='Suggested')
+            status=ModerationStatusFactory(short_label='Suggested')
         )
         self.assertEqual(0, Election.public_objects.count())
         self.assertEqual(2, Election.private_objects.count())
@@ -99,7 +99,7 @@ class TestElectionGeoQueries(TestCase):
         # approve one of them
         ElectionModerationStatusFactory(
             election=e1,
-            status=ModerationStatusFactory(short_title='Approved')
+            status=ModerationStatusFactory(short_label='Approved')
         )
         self.assertEqual(1, Election.public_objects.count())
         self.assertEqual(
@@ -109,7 +109,7 @@ class TestElectionGeoQueries(TestCase):
         # and then delete it again
         ElectionModerationStatusFactory(
             election=e1,
-            status=ModerationStatusFactory(short_title='Deleted')
+            status=ModerationStatusFactory(short_label='Deleted')
         )
         self.assertEqual(0, Election.public_objects.count())
         self.assertEqual(2, Election.private_objects.count())

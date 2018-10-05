@@ -70,9 +70,10 @@ class ElectionFactory(factory.django.DjangoModelFactory):
 class ModerationStatusFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ModerationStatus
-        django_get_or_create = ('short_title', )
-    short_title = 'Approved'
-    long_title = 'long title'
+        django_get_or_create = ('short_label', )
+
+    short_label = 'Approved'
+    long_label = 'long label'
 
 
 class ElectionModerationStatusFactory(factory.django.DjangoModelFactory):
@@ -89,7 +90,7 @@ class ElectionWithStatusFactory(ElectionFactory):
     moderation_status = factory.RelatedFactory(
         ElectionModerationStatusFactory,
         'election',
-        status__short_title='Approved'
+        status__short_label='Approved'
     )
 
 
@@ -98,5 +99,5 @@ def related_status(status):
     return factory.RelatedFactory(
         ElectionModerationStatusFactory,
         'election',
-        status__short_title=status
+        status__short_label=status
     )

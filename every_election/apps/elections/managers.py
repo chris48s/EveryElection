@@ -44,7 +44,7 @@ class ElectionQuerySet(models.QuerySet):
             )\
             .filter(
                 electionmoderationstatus__modified=models.F('latest_status'),
-                electionmoderationstatus__status__short_title=status
+                electionmoderationstatus__status__short_label=status
             )
 
 

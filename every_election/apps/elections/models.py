@@ -56,11 +56,11 @@ class ElectedRole(models.Model):
 
 
 class ModerationStatus(models.Model):
-    short_title = models.CharField(blank=False, max_length=32, unique=True)
-    long_title = models.CharField(blank=False, max_length=100)
+    short_label = models.CharField(blank=False, max_length=32, unique=True)
+    long_label = models.CharField(blank=False, max_length=100)
 
     def __str__(self):
-        return self.short_title
+        return self.short_label
 
 
 class Election(models.Model):
@@ -237,7 +237,7 @@ def init_status_history(sender, instance, **kwargs):
             election=instance,
             # TODO: update this to 'Suggested' once
             # we have moderation data entry features
-            status=ModerationStatus.objects.get(short_title='Approved')
+            status=ModerationStatus.objects.get(short_label='Approved')
         )
         event.save()
 
